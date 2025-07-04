@@ -12,6 +12,8 @@ web-build/
 # expo router
 expo-env.d.ts
 
+src/utils/supabase.ts
+
 # firebase/supabase/vexo
 .env
 
