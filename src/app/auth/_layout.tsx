@@ -1,6 +1,5 @@
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { useRouter } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 
 export default function AuthLayout() {
@@ -9,7 +8,6 @@ export default function AuthLayout() {
 
   useEffect(() => {
     if (!isLoading && user) {
-      // User is authenticated, redirect to dashboard
       router.replace('/tabs/dashboard');
     }
   }, [user, isLoading, router]);

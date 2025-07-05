@@ -6,7 +6,6 @@ import {
   VoteFeatureRequestData,
   FeatureRequestStatus,
 } from '../types/featureRequest';
-import { ApiResponse, PaginatedResponse } from '../types/api';
 
 export const featureRequestService = {
   async getFeatureRequests(status?: FeatureRequestStatus): Promise<FeatureRequest[]> {

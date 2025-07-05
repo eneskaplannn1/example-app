@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   View,
   Text,
@@ -102,8 +102,8 @@ export function UpdateProfileModal({
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
       <View className="flex-1 bg-gray-50">
         {/* Header */}
-        <View className="border-b border-gray-200 bg-white px-4 py-4">
-          <View className="flex-row items-center justify-between">
+        <View className="px-4 py-4 bg-white border-b border-gray-200">
+          <View className="flex-row justify-between items-center">
             <Text className="text-lg font-semibold text-gray-800">Edit Profile</Text>
             <TouchableOpacity onPress={onClose}>
               <Text className="text-blue-600">Cancel</Text>
@@ -113,17 +113,17 @@ export function UpdateProfileModal({
 
         <ScrollView className="flex-1 px-4 py-4">
           {/* Profile Photo */}
-          <View className="mb-6 items-center">
+          <View className="items-center mb-6">
             <Text className="mb-3 text-lg font-semibold text-gray-800">Profile Photo</Text>
             <TouchableOpacity onPress={showImagePickerOptions} className="mb-4">
               {profilePhoto ? (
                 <Image
                   source={{ uri: profilePhoto }}
-                  className="h-24 w-24 rounded-full"
+                  className="w-24 h-24 rounded-full"
                   resizeMode="cover"
                 />
               ) : (
-                <View className="h-24 w-24 items-center justify-center rounded-full bg-gray-200">
+                <View className="justify-center items-center w-24 h-24 bg-gray-200 rounded-full">
                   <Text className="text-4xl">👤</Text>
                 </View>
               )}
@@ -140,7 +140,7 @@ export function UpdateProfileModal({
             <View className="mb-4">
               <Text className="mb-2 text-sm font-medium text-gray-700">First Name</Text>
               <TextInput
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2"
+                className="px-3 py-2 bg-white rounded-lg border border-gray-300"
                 value={name}
                 onChangeText={setName}
                 placeholder="Enter your first name"
@@ -151,7 +151,7 @@ export function UpdateProfileModal({
             <View className="mb-4">
               <Text className="mb-2 text-sm font-medium text-gray-700">Last Name</Text>
               <TextInput
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2"
+                className="px-3 py-2 bg-white rounded-lg border border-gray-300"
                 value={surname}
                 onChangeText={setSurname}
                 placeholder="Enter your last name"
@@ -173,7 +173,7 @@ export function UpdateProfileModal({
                 <Text className="mt-1 font-medium text-white">Updating...</Text>
               </View>
             ) : (
-              <Text className="text-center font-medium text-white">Update Profile</Text>
+              <Text className="font-medium text-center text-white">Update Profile</Text>
             )}
           </TouchableOpacity>
         </ScrollView>

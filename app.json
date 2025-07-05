@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "expo-example-app",
-    "slug": "expo-example-app",
+    "name": "Plant Care",
+    "scheme": "plant-care",
+    "slug": "plant-care",
     "version": "1.0.0",
-    "scheme": "expo-example-app",
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -31,7 +31,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -39,6 +41,15 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      }
+    },
+    "extra": {
+      "apiUrl": "https://api.yourapp.com",
+      "router": {
+        "root": "src/app"
+      },
+      "eas": {
+        "projectId": "57329cf8-8559-472c-9d82-bde1e35ca46a"
       }
     }
   }

@@ -1,0 +1,15 @@
+if user is voted user shouldnt be able to vote again
+enhnace the styling of dashboard
+implement logic for reminders
+
+Nice to have
+
+user must be able to take photo of the plant and identify it
+weather alerts should be based on the user's location
+
+
+
+
+
+
+

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, Pressable, Dimensions } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { View, Text, Pressable } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -11,8 +11,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-
-const { width: screenWidth } = Dimensions.get('window');
 
 interface ToastProps {
   type?: 'success' | 'error' | 'warning' | 'info';
@@ -60,7 +58,7 @@ export function CustomToast({
   onPress,
   onHide,
   position = 'top',
-  visibilityTime = 4000,
+  visibilityTime = 1000,
 }: ToastProps) {
   const translateY = useSharedValue(position === 'top' ? -100 : 100);
   const opacity = useSharedValue(0);
@@ -233,7 +231,6 @@ export function CustomToast({
             </Pressable>
           </View>
 
-          {/* Progress bar */}
           <Animated.View
             style={[
               {

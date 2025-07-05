@@ -10,6 +10,7 @@ import { RemindersSection } from './RemindersSection';
 import { WeatherAlertsSection } from './WeatherAlertsSection';
 import { MostWantedRequestsSection } from './MostWantedRequestsSection';
 import { LoadingScreen } from './LoadingScreen';
+import { NotificationDebugger } from '../../../components/NotificationDebugger';
 
 export function Dashboard() {
   const { user } = useAuth();
@@ -64,6 +65,7 @@ export function Dashboard() {
         <RemindersSection careReminders={careReminders} />
         <WeatherAlertsSection weatherAlerts={weatherAlerts} />
         <View className="h-20" />
+        <NotificationDebugger />
       </ScrollView>
     </>
   );

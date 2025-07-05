@@ -1,24 +1,24 @@
 import { useCallback } from 'react';
 import { useAuth } from '../../../context/AuthContext';
-import { getUserPlants } from '../services/userPlantService';
-import { UserPlant } from '../../../types/userPlant';
+import { getCareReminders } from '../../../services/careReminderService';
+import { CareReminder } from '../../../types/careReminder';
 import { useQuery } from '@tanstack/react-query';
 
-export function usePlants() {
+export function useCareReminders() {
   const { user } = useAuth();
 
   const {
-    data: userPlants = [],
+    data: careReminders = [],
     isLoading,
     error,
     refetch,
   } = useQuery({
-    queryKey: ['userPlants', user?.id],
-    queryFn: async (): Promise<UserPlant[]> => {
+    queryKey: ['careReminders', user?.id],
+    queryFn: async (): Promise<CareReminder[]> => {
       if (!user?.id) {
         throw new Error('User not authenticated');
       }
-      return await getUserPlants(user.id);
+      return await getCareReminders(user.id);
     },
     enabled: !!user?.id,
   });
@@ -28,7 +28,7 @@ export function usePlants() {
   }, [refetch]);
 
   return {
-    userPlants,
+    careReminders,
     isLoading,
     error: error?.message || null,
     refreshData,

@@ -1,5 +1,4 @@
-import React from 'react';
-import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+import Toast from 'react-native-toast-message';
 import { CustomToast } from './Toast';
 
 export function ToastManager() {
@@ -11,7 +10,7 @@ export function ToastManager() {
         text2={props.text2}
         onPress={props.onPress}
         position="top"
-        visibilityTime={4000}
+        visibilityTime={2500}
       />
     ),
     error: (props: any) => (
@@ -21,7 +20,7 @@ export function ToastManager() {
         text2={props.text2}
         onPress={props.onPress}
         position="top"
-        visibilityTime={5000}
+        visibilityTime={2500}
       />
     ),
     warning: (props: any) => (
@@ -31,7 +30,7 @@ export function ToastManager() {
         text2={props.text2}
         onPress={props.onPress}
         position="top"
-        visibilityTime={4000}
+        visibilityTime={2500}
       />
     ),
     info: (props: any) => (
@@ -41,7 +40,7 @@ export function ToastManager() {
         text2={props.text2}
         onPress={props.onPress}
         position="top"
-        visibilityTime={3000}
+        visibilityTime={2500}
       />
     ),
   };

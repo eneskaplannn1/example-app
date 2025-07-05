@@ -1,23 +1,13 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Linking, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Linking, Alert } from 'react-native';
+import { ProfileRow } from './ProfileRow';
+import { SupportModal } from './SupportModal';
 
 export function SupportSection() {
+  const [isSupportModalVisible, setIsSupportModalVisible] = useState(false);
+
   const handleContactSupport = () => {
-    Alert.alert('Contact Support', 'How would you like to contact support?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Email',
-        onPress: () => {
-          Linking.openURL('mailto:support@plantcareapp.com?subject=Support Request');
-        },
-      },
-      {
-        text: 'Website',
-        onPress: () => {
-          Linking.openURL('https://plantcareapp.com/support');
-        },
-      },
-    ]);
+    setIsSupportModalVisible(true);
   };
 
   const handleFAQ = () => {
@@ -42,50 +32,45 @@ export function SupportSection() {
 
   return (
     <View className="mb-6">
-      <Text className="mb-3 text-lg font-semibold text-gray-800">Support & Legal</Text>
-      <View className="rounded-lg bg-white shadow-sm">
-        <TouchableOpacity
+      <Text className="mb-4 text-xl font-bold text-gray-800">Support & Legal</Text>
+      <View className="overflow-hidden bg-white rounded-2xl border shadow-lg border-gray-100/50 shadow-gray-200/50">
+        <ProfileRow
+          icon="mail-outline"
+          title="Contact Support"
+          subtitle="Get help with your account or app"
           onPress={handleContactSupport}
-          className="flex-row items-center border-b border-gray-100 p-4">
-          <Text className="mr-3 text-2xl">📧</Text>
-          <View className="flex-1">
-            <Text className="font-medium text-gray-800">Contact Support</Text>
-            <Text className="text-sm text-gray-500">Get help with your account or app</Text>
-          </View>
-          <Text className="text-gray-400">›</Text>
-        </TouchableOpacity>
+          showBorder={true}
+        />
 
-        <TouchableOpacity
+        {/* <ProfileRow
+          icon="help-circle-outline"
+          title="FAQ"
+          subtitle="Frequently asked questions"
           onPress={handleFAQ}
-          className="flex-row items-center border-b border-gray-100 p-4">
-          <Text className="mr-3 text-2xl">❓</Text>
-          <View className="flex-1">
-            <Text className="font-medium text-gray-800">FAQ</Text>
-            <Text className="text-sm text-gray-500">Frequently asked questions</Text>
-          </View>
-          <Text className="text-gray-400">›</Text>
-        </TouchableOpacity>
+          showBorder={true}
+        /> */}
 
-        <TouchableOpacity
+        <ProfileRow
+          icon="shield-checkmark-outline"
+          title="Privacy Policy"
+          subtitle="How we protect your data"
           onPress={handlePrivacyPolicy}
-          className="flex-row items-center border-b border-gray-100 p-4">
-          <Text className="mr-3 text-2xl">🔒</Text>
-          <View className="flex-1">
-            <Text className="font-medium text-gray-800">Privacy Policy</Text>
-            <Text className="text-sm text-gray-500">How we protect your data</Text>
-          </View>
-          <Text className="text-gray-400">›</Text>
-        </TouchableOpacity>
+          showBorder={true}
+        />
 
-        <TouchableOpacity onPress={handleTermsOfService} className="flex-row items-center p-4">
-          <Text className="mr-3 text-2xl">📄</Text>
-          <View className="flex-1">
-            <Text className="font-medium text-gray-800">Terms of Service</Text>
-            <Text className="text-sm text-gray-500">App usage terms and conditions</Text>
-          </View>
-          <Text className="text-gray-400">›</Text>
-        </TouchableOpacity>
+        <ProfileRow
+          icon="document-text-outline"
+          title="Terms of Service"
+          subtitle="App usage terms and conditions"
+          onPress={handleTermsOfService}
+          showBorder={false}
+        />
       </View>
+
+      <SupportModal
+        visible={isSupportModalVisible}
+        onClose={() => setIsSupportModalVisible(false)}
+      />
     </View>
   );
 }

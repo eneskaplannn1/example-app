@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useState } from 'react';
+import { View, ScrollView, Alert, StatusBar } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../../context/AuthContext';
-import { ProfileHeader } from './ProfileHeader';
 import { ProfileSection } from './ProfileSection';
 import { UpdateProfileModal } from './UpdateProfileModal';
 import { ChangePasswordModal } from './ChangePasswordModal';
@@ -13,7 +11,7 @@ import { useProfile } from '../hooks/useProfile';
 export function ProfileScreen() {
   const router = useRouter();
   const { user, logout } = useAuth();
-  const { updateProfile, changePassword, deleteAccount, isLoading } = useProfile();
+  const { updateProfile, changePassword, isLoading } = useProfile();
   const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
   const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
 
@@ -29,29 +27,6 @@ export function ProfileScreen() {
         },
       },
     ]);
-  };
-
-  const handleDeleteAccount = () => {
-    Alert.alert(
-      'Delete Account',
-      'This action cannot be undone. All your data will be permanently deleted.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await deleteAccount();
-              Alert.alert('Account Deleted', 'Your account has been successfully deleted.');
-              router.replace('/auth/login');
-            } catch (error) {
-              Alert.alert('Error', 'Failed to delete account. Please try again.');
-            }
-          },
-        },
-      ]
-    );
   };
 
   const handleProfileUpdate = async (profileData: {
@@ -82,55 +57,56 @@ export function ProfileScreen() {
   };
 
   return (
-    <>
-      <ScrollView className="flex-1 px-4 py-4">
-        {/* Profile Header */}
-        <ProfileHeader user={user} />
+    <View className="flex-1 bg-gray-50">
+      <StatusBar barStyle="dark-content" backgroundColor="#f9fafb" />
 
-        {/* Profile Management */}
-        <ProfileSection
-          title="Account Settings"
-          items={[
-            {
-              title: 'Edit Profile',
-              subtitle: 'Update your name, surname, and profile photo',
-              icon: '👤',
-              onPress: () => setIsUpdateModalVisible(true),
-            },
-            {
-              title: 'Change Password',
-              subtitle: 'Update your account password',
-              icon: '🔒',
-              onPress: () => setIsPasswordModalVisible(true),
-            },
-          ]}
-        />
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ paddingBottom: 40 }}
+        showsVerticalScrollIndicator={false}>
+        <View className="px-6 space-y-6">
+          <ProfileSection
+            title="Account Settings"
+            items={[
+              {
+                title: 'Edit Profile',
+                subtitle: 'Update your name, surname, and profile photo',
+                icon: 'person-outline',
+                onPress: () => setIsUpdateModalVisible(true),
+              },
+              {
+                title: 'Change Password',
+                subtitle: 'Update your account password',
+                icon: 'lock-closed-outline',
+                onPress: () => setIsPasswordModalVisible(true),
+              },
+            ]}
+          />
 
-        {/* Support */}
-        <SupportSection />
+          {/* Support */}
+          <SupportSection />
 
-        {/* Account Actions */}
-        <ProfileSection
-          title="Account Actions"
-          items={[
-            {
-              title: 'Logout',
-              subtitle: 'Sign out of your account',
-              icon: '🚪',
-              onPress: handleLogout,
-              destructive: true,
-            },
-            {
-              title: 'Delete Account',
-              subtitle: 'Permanently delete your account and all data',
-              icon: '🗑️',
-              onPress: handleDeleteAccount,
-              destructive: true,
-            },
-          ]}
-        />
-
-        <View className="h-20" />
+          {/* Account Actions */}
+          <ProfileSection
+            title="Account Actions"
+            items={[
+              {
+                title: 'Logout',
+                subtitle: 'Sign out of your account',
+                icon: 'log-out-outline',
+                onPress: handleLogout,
+                destructive: true,
+              },
+              // {
+              //   title: 'Delete Account',
+              //   subtitle: 'Permanently delete your account and all data',
+              //   icon: 'trash-outline',
+              //   onPress: handleDeleteAccount,
+              //   destructive: true,
+              // },
+            ]}
+          />
+        </View>
       </ScrollView>
 
       <UpdateProfileModal
@@ -147,6 +123,6 @@ export function ProfileScreen() {
         onChangePassword={handlePasswordChange}
         isLoading={isLoading}
       />
-    </>
+    </View>
   );
 }

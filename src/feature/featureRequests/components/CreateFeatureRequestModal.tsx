@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Modal,
   View,
@@ -72,7 +72,7 @@ export function CreateFeatureRequestModal({
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1 bg-white">
-        <View className="flex-row items-center justify-between border-b border-gray-200 p-4">
+        <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
           <Text className="text-lg font-semibold text-gray-800">New Feature Request</Text>
           <TouchableOpacity onPress={handleClose} disabled={isLoading}>
             <Ionicons name="close" size={24} color="#6B7280" />
@@ -86,7 +86,7 @@ export function CreateFeatureRequestModal({
               value={title}
               onChangeText={setTitle}
               placeholder="Enter a clear, descriptive title"
-              className="rounded-lg border border-gray-300 p-3 text-gray-800"
+              className="p-3 text-gray-800 rounded-lg border border-gray-300"
               maxLength={100}
             />
             <Text className="mt-1 text-xs text-gray-500">{title.length}/100 characters</Text>
@@ -98,7 +98,7 @@ export function CreateFeatureRequestModal({
               value={description}
               onChangeText={setDescription}
               placeholder="Describe the feature you'd like to see implemented..."
-              className="rounded-lg border border-gray-300 p-3 text-gray-800"
+              className="p-3 text-gray-800 rounded-lg border border-gray-300"
               multiline
               numberOfLines={6}
               textAlignVertical="top"
@@ -108,12 +108,12 @@ export function CreateFeatureRequestModal({
           </View>
 
           {error && (
-            <View className="mb-4 rounded-lg bg-red-100 p-3">
+            <View className="p-3 mb-4 bg-red-100 rounded-lg">
               <Text className="text-sm text-red-700">{error}</Text>
             </View>
           )}
 
-          <View className="mb-4 rounded-lg bg-gray-50 p-4">
+          <View className="p-4 mb-4 bg-gray-50 rounded-lg">
             <Text className="text-sm text-gray-600">
               <Text className="font-medium">Tips for a great feature request:</Text>
               {'\n'}• Be specific about what you want to achieve
@@ -124,7 +124,7 @@ export function CreateFeatureRequestModal({
           </View>
         </ScrollView>
 
-        <View className="border-t border-gray-200 p-4">
+        <View className="p-4 border-t border-gray-200">
           <TouchableOpacity
             onPress={handleSubmit}
             disabled={isLoading || !title.trim() || !description.trim()}

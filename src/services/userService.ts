@@ -1,45 +1,42 @@
-import customRequest from '../utils/customRequest';
-import { ApiResponse, User, PaginatedResponse, PaginationParams } from '../types/api';
+import { supabase } from '../utils/supabase';
 
-// User service class
-export class UserService {
-  // Get current user profile
-  static async getCurrentUser(): Promise<ApiResponse<User>> {
-    const response = await customRequest.get('/user/profile');
-    return response.data;
-  }
+export async function updateUserExpoToken(userId: string, expoToken: string): Promise<void> {
+  const { error } = await supabase
+    .from('users')
+    .update({ expo_push_token: expoToken })
+    .eq('id', userId);
 
-  // Get user by ID
-  static async getUserById(id: string): Promise<ApiResponse<User>> {
-    const response = await customRequest.get(`/users/${id}`);
-    return response.data;
-  }
-
-  // Get users with pagination
-  static async getUsers(params?: PaginationParams): Promise<PaginatedResponse<User>> {
-    const response = await customRequest.get('/users', { params });
-    return response.data;
-  }
-
-  // Update user profile
-  static async updateProfile(data: Partial<User>): Promise<ApiResponse<User>> {
-    const response = await customRequest.put('/user/profile', data);
-    return response.data;
-  }
-
-  // Delete user account
-  static async deleteAccount(): Promise<ApiResponse<void>> {
-    const response = await customRequest.delete('/user/account');
-    return response.data;
+  if (error) {
+    console.error('Error updating user expo token:', error);
+    throw error;
   }
 }
 
-// React Query hooks for user operations
-export const userKeys = {
-  all: ['users'] as const,
-  lists: () => [...userKeys.all, 'list'] as const,
-  list: (params?: PaginationParams) => [...userKeys.lists(), params] as const,
-  details: () => [...userKeys.all, 'detail'] as const,
-  detail: (id: string) => [...userKeys.details(), id] as const,
-  profile: () => [...userKeys.all, 'profile'] as const,
-};
+export async function getUserExpoToken(userId: string): Promise<string | null> {
+  const { data, error } = await supabase
+    .from('users')
+    .select('expo_push_token')
+    .eq('id', userId)
+    .single();
+
+  if (error) {
+    console.error('Error getting user expo token:', error);
+    return null;
+  }
+
+  return data?.expo_push_token || null;
+}
+
+export async function getAllUsersWithTokens(): Promise<{ id: string; expo_push_token: string }[]> {
+  const { data, error } = await supabase
+    .from('users')
+    .select('id, expo_push_token')
+    .not('expo_push_token', 'is', null);
+
+  if (error) {
+    console.error('Error getting users with tokens:', error);
+    return [];
+  }
+
+  return data || [];
+}

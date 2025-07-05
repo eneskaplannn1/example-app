@@ -1,10 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useAuth } from '../../../context/AuthContext';
-import {
-  updateUserProfile,
-  changeUserPassword,
-  deleteUserAccount,
-} from '../services/profileService';
+import { updateUserProfile, changeUserPassword } from '../services/profileService';
 
 export function useProfile() {
   const { user, updateUser } = useAuth();
@@ -49,26 +45,9 @@ export function useProfile() {
     [user?.id]
   );
 
-  const deleteAccount = useCallback(async () => {
-    if (!user?.id) {
-      throw new Error('User not authenticated');
-    }
-
-    try {
-      setIsLoading(true);
-      await deleteUserAccount(user.id);
-    } catch (error) {
-      console.error('Error deleting account:', error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [user?.id]);
-
   return {
     updateProfile,
     changePassword,
-    deleteAccount,
     isLoading,
   };
 }

@@ -28,16 +28,16 @@ export function PlantsSection({ userPlants, onPlantAdded, onPlantUpdated }: Plan
 
   return (
     <View className="px-4 py-4">
-      <View className="mb-3 flex-row items-center justify-between">
+      <View className="flex-row justify-between items-center mb-3">
         <Text className="text-lg font-semibold text-gray-800">My Plants</Text>
         <TouchableOpacity onPress={handleViewAll}>
           <Text className="text-sm text-blue-600">View All</Text>
         </TouchableOpacity>
       </View>
       {userPlants.length === 0 ? (
-        <View className="items-center rounded-lg bg-white p-6">
+        <View className="items-center p-6 bg-white rounded-lg">
           <Text className="mb-2 text-center text-gray-500">No plants added yet</Text>
-          <TouchableOpacity className="rounded bg-green-500 px-4 py-2" onPress={handleAddPlant}>
+          <TouchableOpacity className="px-4 py-2 bg-green-500 rounded" onPress={handleAddPlant}>
             <Text className="font-medium text-white">Add Your First Plant</Text>
           </TouchableOpacity>
         </View>
@@ -47,7 +47,7 @@ export function PlantsSection({ userPlants, onPlantAdded, onPlantUpdated }: Plan
             <PlantCard key={plant.id} plant={plant} onPlantUpdated={onPlantUpdated} />
           ))}
           <TouchableOpacity
-            className="mt-3 items-center rounded-lg border-2 border-dashed border-gray-300 p-3"
+            className="items-center p-3 mt-3 rounded-lg border-2 border-gray-300 border-dashed"
             onPress={handleAddPlant}>
             <Text className="text-gray-500">+ Add Another Plant</Text>
           </TouchableOpacity>
