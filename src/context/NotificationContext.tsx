@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { notificationService } from '../services/notificationService';
-import { updateUserExpoToken } from '../services/userService';
 import { useRouter } from 'expo-router';
 import { useAuth } from './AuthContext';
 
@@ -24,12 +23,15 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       const token = notificationService.getExpoPushToken();
       setExpoPushToken(token);
 
-      // Save token to database if user is authenticated
+      // Register user with Supabase notification system if authenticated
       if (token && user?.id) {
         try {
-          await updateUserExpoToken(user.id, token);
+          const success = await notificationService.registerUserWithSupabase(user.id);
+          if (!success) {
+            console.error('Failed to register user with notification system');
+          }
         } catch (error) {
-          console.error('Error saving expo token to database:', error);
+          console.error('Error registering user with notification system:', error);
         }
       }
 
@@ -59,6 +61,14 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
     return cleanup;
   }, [router, user?.id]);
+
+  // Cleanup when user logs out
+  useEffect(() => {
+    if (!user?.id && notificationService.isUserRegistered()) {
+      // User logged out, unregister from notifications
+      notificationService.unregisterUserFromSupabase(user?.id || '');
+    }
+  }, [user?.id]);
 
   return (
     <NotificationContext.Provider

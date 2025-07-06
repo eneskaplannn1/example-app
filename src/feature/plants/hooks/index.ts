@@ -1,4 +1,4 @@
 export { useAddPlant } from './useAddPlant';
-export { usePlants } from './usePlants';
+export { useUserPlants, usePlans } from './usePlants';
 export { useCareReminders } from './useCareReminders';
 export { useCareRemindersWithNotifications } from './useCareRemindersWithNotifications';

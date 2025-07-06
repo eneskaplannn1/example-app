@@ -21,8 +21,7 @@ interface AddPlantModalProps {
 }
 
 export function AddPlantModal({ visible, onClose, onPlantAdded }: AddPlantModalProps) {
-  const { addPlant, loadAvailablePlants, availablePlants, isLoading, isLoadingPlants, error } =
-    useAddPlant();
+  const { addPlant, plans, isLoading, isLoadingPlants, error } = useAddPlant();
   const [selectedPlant, setSelectedPlant] = useState<Plant | null>(null);
   const [nickname, setNickname] = useState('');
   const [acquiredDate, setAcquiredDate] = useState(new Date().toISOString().split('T')[0]);
@@ -31,9 +30,9 @@ export function AddPlantModal({ visible, onClose, onPlantAdded }: AddPlantModalP
 
   useEffect(() => {
     if (visible) {
-      loadAvailablePlants();
+      setSelectedPlant(plans?.[0] || null);
     }
-  }, [visible, loadAvailablePlants]);
+  }, [visible, plans]);
 
   useEffect(() => {
     if (error) {
@@ -159,7 +158,7 @@ export function AddPlantModal({ visible, onClose, onPlantAdded }: AddPlantModalP
               </View>
             ) : (
               <View>
-                {availablePlants.map((plant) => (
+                {plans?.map((plant: Plant) => (
                   <PlantOption key={plant.id} plant={plant} />
                 ))}
               </View>

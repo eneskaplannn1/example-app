@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useCareRemindersWithNotifications } from '../hooks/useCareRemindersWithNotifications';
-import { queryClient } from '../../../utils/queryClient';
 
 interface CreateReminderModalProps {
   visible: boolean;
@@ -31,6 +30,14 @@ const REMINDER_TYPES = [
   { value: 'custom', label: 'Custom' },
 ];
 
+const FREQUENCY_OPTIONS = [
+  { value: 'once', label: 'Once' },
+  { value: 'daily', label: 'Daily' },
+  { value: 'weekly', label: 'Weekly' },
+  { value: 'biweekly', label: 'Every 2 weeks' },
+  { value: 'monthly', label: 'Monthly' },
+];
+
 export function CreateReminderModal({
   visible,
   onClose,
@@ -41,6 +48,7 @@ export function CreateReminderModal({
 }: CreateReminderModalProps) {
   const [reminderType, setReminderType] = useState('watering');
   const [customType, setCustomType] = useState('');
+  const [frequency, setFrequency] = useState('once');
   const [reminderDateTime, setReminderDateTime] = useState(new Date());
   const [message, setMessage] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -66,6 +74,7 @@ export function CreateReminderModal({
           user_plant_id: userPlantId,
           reminder_type: finalReminderType,
           reminder_time: reminderDateTime.toISOString(),
+          frequency: frequency,
           message: message.trim() || `Time to ${finalReminderType} your ${plantName}`,
         },
         plantName
@@ -89,6 +98,7 @@ export function CreateReminderModal({
   const resetForm = () => {
     setReminderType('watering');
     setCustomType('');
+    setFrequency('once');
     setReminderDateTime(new Date());
     setMessage('');
   };
@@ -118,6 +128,16 @@ export function CreateReminderModal({
       }`}
       onPress={() => setReminderType(type.value)}>
       <Text className="font-medium text-gray-800">{type.label}</Text>
+    </TouchableOpacity>
+  );
+
+  const FrequencyOption = ({ option }: { option: { value: string; label: string } }) => (
+    <TouchableOpacity
+      className={`mb-2 rounded-lg border p-3 ${
+        frequency === option.value ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white'
+      }`}
+      onPress={() => setFrequency(option.value)}>
+      <Text className="font-medium text-gray-800">{option.label}</Text>
     </TouchableOpacity>
   );
 
@@ -161,6 +181,14 @@ export function CreateReminderModal({
                 />
               </View>
             )}
+          </View>
+
+          {/* Frequency */}
+          <View className="mb-6">
+            <Text className="mb-3 text-lg font-semibold text-gray-800">Frequency</Text>
+            {FREQUENCY_OPTIONS.map((option) => (
+              <FrequencyOption key={option.value} option={option} />
+            ))}
           </View>
 
           {/* Reminder Date and Time */}

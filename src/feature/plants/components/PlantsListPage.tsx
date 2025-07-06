@@ -14,11 +14,11 @@ import { useRouter } from 'expo-router';
 import { UserPlant } from '../../../types/userPlant';
 import { PlantCard } from './PlantCard';
 import { AddPlantModal } from './AddPlantModal';
-import { usePlants } from '../hooks';
+import { useUserPlants } from '../hooks';
 
 export function PlantsListPage() {
   const router = useRouter();
-  const { userPlants, isLoading, error, refreshData } = usePlants();
+  const { userPlants, isLoading, error, refreshData } = useUserPlants();
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'needs-water' | 'healthy'>('all');
@@ -38,11 +38,6 @@ export function PlantsListPage() {
     setIsAddModalVisible(true);
   };
 
-  const handlePlantPress = (plant: UserPlant) => {
-    // Navigate to plant detail page
-    router.push(`/plants/${plant.id}`);
-  };
-
   const handlePlantUpdated = useCallback(
     async (updatedPlant: UserPlant) => {
       await refreshData();
@@ -50,7 +45,7 @@ export function PlantsListPage() {
     [refreshData]
   );
 
-  const filteredPlants = userPlants.filter((plant: UserPlant) => {
+  const filteredPlants = userPlants?.filter((plant: UserPlant) => {
     const matchesSearch =
       plant.nickname?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       plant.plants?.common_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -73,15 +68,15 @@ export function PlantsListPage() {
   });
 
   const getStats = () => {
-    const total = userPlants.length;
-    const needsWater = userPlants.filter((plant: UserPlant) => {
+    const total = userPlants?.length || 0;
+    const needsWater = userPlants?.filter((plant: UserPlant) => {
       const lastWatered = new Date(plant.last_watered);
       const daysSinceWatering = Math.floor(
         (Date.now() - lastWatered.getTime()) / (1000 * 60 * 60 * 24)
       );
       return daysSinceWatering >= 7;
     }).length;
-    const healthy = total - needsWater;
+    const healthy = total - (needsWater || 0) || 0;
 
     return { total, needsWater, healthy };
   };
@@ -188,7 +183,7 @@ export function PlantsListPage() {
               <ActivityIndicator size="large" color="#10b981" />
               <Text className="mt-2 text-gray-600">Loading plants...</Text>
             </View>
-          ) : filteredPlants.length === 0 ? (
+          ) : filteredPlants?.length === 0 ? (
             <View className="items-center py-8">
               {searchQuery || filterType !== 'all' ? (
                 <>
@@ -222,9 +217,9 @@ export function PlantsListPage() {
           ) : (
             <>
               <Text className="mb-3 text-sm text-gray-600">
-                {filteredPlants.length} plant{filteredPlants.length !== 1 ? 's' : ''} found
+                {filteredPlants?.length} plant{filteredPlants?.length !== 1 ? 's' : ''} found
               </Text>
-              {filteredPlants.map((plant: UserPlant) => (
+              {filteredPlants?.map((plant: UserPlant) => (
                 <View key={plant.id} className="mb-3">
                   <PlantCard plant={plant} onPlantUpdated={handlePlantUpdated} />
                 </View>

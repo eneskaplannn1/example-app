@@ -1,9 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { addUserPlant } from '../services/userPlantService';
-import { getPlants } from '../services/plantService';
-import { Plant } from '../../../types/plant';
 import { UserPlant } from '../../../types/userPlant';
+import { usePlans } from './usePlants';
 
 interface AddPlantData {
   plant_id: string;
@@ -17,24 +16,8 @@ export function useAddPlant() {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [availablePlants, setAvailablePlants] = useState<Plant[]>([]);
-  const [isLoadingPlants, setIsLoadingPlants] = useState(false);
 
-  const loadAvailablePlants = useCallback(async () => {
-    if (!user?.id) return;
-
-    try {
-      setIsLoadingPlants(true);
-      setError(null);
-      const plants = await getPlants();
-      setAvailablePlants(plants);
-    } catch (err) {
-      console.error('Error loading plants:', err);
-      setError('Failed to load available plants');
-    } finally {
-      setIsLoadingPlants(false);
-    }
-  }, [user?.id]);
+  const { data: plans, isLoading: isLoadingPlants } = usePlans();
 
   const addPlant = useCallback(
     async (plantData: AddPlantData): Promise<UserPlant | null> => {
@@ -72,8 +55,7 @@ export function useAddPlant() {
 
   return {
     addPlant,
-    loadAvailablePlants,
-    availablePlants,
+    plans,
     isLoading,
     isLoadingPlants,
     error,

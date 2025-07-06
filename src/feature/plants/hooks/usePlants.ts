@@ -3,8 +3,10 @@ import { useAuth } from '../../../context/AuthContext';
 import { getUserPlants } from '../services/userPlantService';
 import { UserPlant } from '../../../types/userPlant';
 import { useQuery } from '@tanstack/react-query';
+import { getPlants } from '../services';
+import { Plant } from '~/src/types/plant';
 
-export function usePlants() {
+export function useUserPlants() {
   const { user } = useAuth();
 
   const {
@@ -33,4 +35,13 @@ export function usePlants() {
     error: error?.message || null,
     refreshData,
   };
+}
+
+export function usePlans() {
+  return useQuery({
+    queryKey: ['plans'],
+    queryFn: async (): Promise<Plant[]> => {
+      return await getPlants();
+    },
+  });
 }
