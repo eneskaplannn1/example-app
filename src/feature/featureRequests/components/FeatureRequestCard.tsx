@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { FeatureRequest } from '../../../types/featureRequest';
 import { StatusBadge } from './StatusBadge';
 import { VoteButton } from './VoteButton';
+import { formatDate } from '~/src/utils/formatters';
 
 interface FeatureRequestCardProps {
   featureRequest: FeatureRequest;
@@ -13,20 +14,11 @@ export function FeatureRequestCard({ featureRequest, onVoteChange }: FeatureRequ
   const isUpvoted = featureRequest.user_vote?.vote_type === 'upvote';
   const isDownvoted = featureRequest.user_vote?.vote_type === 'downvote';
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
-
   return (
-    <View className="p-5 mb-4 bg-white rounded-xl border border-gray-100 shadow-lg shadow-gray-200/50">
+    <View className="mb-4 rounded-xl border border-gray-100 bg-white p-5 shadow-lg shadow-gray-200/50">
       {/* Header with title and status */}
-      <View className="flex-row justify-between items-start mb-3">
-        <Text className="flex-1 mr-3 text-xl font-bold leading-tight text-gray-900">
+      <View className="mb-3 flex-row items-start justify-between">
+        <Text className="mr-3 flex-1 text-xl font-bold leading-tight text-gray-900">
           {featureRequest.title}
         </Text>
         <StatusBadge status={featureRequest.status} />
@@ -36,9 +28,9 @@ export function FeatureRequestCard({ featureRequest, onVoteChange }: FeatureRequ
       <Text className="mb-4 text-base leading-6 text-gray-700">{featureRequest.description}</Text>
 
       {/* User info and date */}
-      <View className="flex-row justify-between items-center pb-3 mb-4 border-b border-gray-100">
+      <View className="mb-4 flex-row items-center justify-between border-b border-gray-100 pb-3">
         <View className="flex-row items-center">
-          <View className="justify-center items-center w-6 h-6 bg-blue-100 rounded-full">
+          <View className="h-6 w-6 items-center justify-center rounded-full bg-blue-100">
             <Ionicons name="person" size={12} color="#3B82F6" />
           </View>
           <Text className="ml-2 text-sm font-medium text-gray-600">Anonymous User</Text>
@@ -52,15 +44,15 @@ export function FeatureRequestCard({ featureRequest, onVoteChange }: FeatureRequ
       </View>
 
       {/* Vote section */}
-      <View className="flex-row justify-between items-center">
-        <View className="flex-row items-center px-3 py-2 bg-gray-50 rounded-lg">
+      <View className="flex-row items-center justify-between">
+        <View className="flex-row items-center rounded-lg bg-gray-50 px-3 py-2">
           <Ionicons name="thumbs-up" size={16} color="#10B981" />
           <Text className="ml-2 text-sm font-semibold text-gray-800">
             {featureRequest.votes_count} votes
           </Text>
         </View>
 
-        <View className="flex-row gap-x-2">
+        <View className="flex-row gap-x-3">
           <VoteButton
             featureRequestId={featureRequest.id}
             voteType="upvote"

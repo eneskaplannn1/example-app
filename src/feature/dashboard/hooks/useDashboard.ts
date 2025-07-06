@@ -8,7 +8,7 @@ import { UserPlant } from '../../../types/userPlant';
 import { CareReminder } from '../../../types/careReminder';
 import { WeatherAlert } from '../../../types/weatherAlert';
 import { FeatureRequest } from '../../../types/featureRequest';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 interface DashboardStats {
   totalPlants: number;
@@ -27,6 +27,7 @@ interface DashboardData {
 
 export function useDashboard() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   const calculateStats = useCallback(
     (plants: UserPlant[], reminders: CareReminder[], alerts: WeatherAlert[]) => {
@@ -82,7 +83,8 @@ export function useDashboard() {
 
   const refreshData = useCallback(async () => {
     await refetch();
-  }, [refetch]);
+    queryClient.invalidateQueries({ queryKey: ['dashboard', user?.id] });
+  }, [refetch, user?.id, queryClient]);
 
   return {
     userPlants: dashboardData?.userPlants || [],

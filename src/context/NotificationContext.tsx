@@ -28,7 +28,6 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       if (token && user?.id) {
         try {
           await updateUserExpoToken(user.id, token);
-          console.log('Expo push token saved to database');
         } catch (error) {
           console.error('Error saving expo token to database:', error);
         }
@@ -46,11 +45,9 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     // Set up notification listeners
     const cleanup = notificationService.setupNotificationListeners(
       (notification) => {
-        console.log('Notification received:', notification);
         // Handle notification received while app is in foreground
       },
       (response) => {
-        console.log('Notification response received:', response);
         // Handle notification tap
         const data = response.notification.request.content.data;
         if (data?.userPlantId) {

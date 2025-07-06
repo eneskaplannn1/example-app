@@ -7,7 +7,7 @@ export interface FeatureRequest {
   user_id: string;
   created_at: string;
   updated_at: string;
-  user_vote?: FeatureRequestVote;
+  user_vote?: FeatureRequestVote | null;
 }
 
 export interface FeatureRequestVote {

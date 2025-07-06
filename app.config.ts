@@ -18,14 +18,18 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     supportsTablet: true,
     infoPlist: {
       UIBackgroundModes: ['remote-notification'],
+      NSCameraUsageDescription: 'This app uses the camera to take photos of plants.',
+      NSPhotoLibraryUsageDescription: 'This app accesses your photos to let you share them.',
     },
+    bundleIdentifier: 'com.enes.plant-app',
   },
   android: {
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#FFFFFF',
     },
-    permissions: ['NOTIFICATIONS'],
+    permissions: ['NOTIFICATIONS', 'CAMERA', 'READ_EXTERNAL_STORAGE', 'WRITE_EXTERNAL_STORAGE'],
+    package: 'com.enes.plantapp',
   },
   web: {
     favicon: './assets/favicon.png',
@@ -34,6 +38,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     // Environment variables
     apiUrl: process.env.API_URL || 'https://api.yourapp.com',
     // Add other environment variables here
+    eas: {
+      projectId: 'ed073822-5b73-4222-b31b-14b7ab3ad3f7',
+    },
   },
   plugins: [
     [
@@ -52,9 +59,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-notifications',
       {
-        icon: './assets/notification-icon.png',
+        icon: './assets/icon.png',
         color: '#ffffff',
-        sounds: ['./assets/notification-sound.wav'],
       },
     ],
   ],

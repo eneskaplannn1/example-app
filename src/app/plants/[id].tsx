@@ -52,7 +52,7 @@ export default function PlantDetailPage() {
   if (isLoading) {
     return (
       <SafeAreaView className="flex-1 bg-gray-50">
-        <View className="flex-1 justify-center items-center">
+        <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#10b981" />
           <Text className="mt-2 text-gray-600">Loading plant details...</Text>
         </View>
@@ -63,13 +63,13 @@ export default function PlantDetailPage() {
   if (!plant) {
     return (
       <SafeAreaView className="flex-1 bg-gray-50">
-        <View className="flex-1 justify-center items-center px-4">
+        <View className="flex-1 items-center justify-center px-4">
           <Text className="text-lg font-medium text-gray-800">Plant Not Found</Text>
           <Text className="mt-2 text-center text-gray-600">
             The plant you&apos;re looking for doesn&apos;t exist or has been removed.
           </Text>
           <TouchableOpacity
-            className="px-4 py-2 mt-4 bg-blue-500 rounded-lg"
+            className="mt-4 rounded-lg bg-blue-500 px-4 py-2"
             onPress={() => router.back()}>
             <Text className="font-medium text-white">Go Back</Text>
           </TouchableOpacity>
@@ -109,8 +109,8 @@ export default function PlantDetailPage() {
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       {/* Header */}
-      <View className="px-4 py-4 bg-white border-b border-gray-200">
-        <View className="flex-row justify-between items-center">
+      <View className="border-b border-gray-200 bg-white px-4 py-4">
+        <View className="flex-row items-center justify-between">
           <TouchableOpacity onPress={() => router.back()}>
             <Text className="text-blue-600">← Back</Text>
           </TouchableOpacity>
@@ -121,15 +121,15 @@ export default function PlantDetailPage() {
 
       <ScrollView className="flex-1 px-4 py-4">
         {/* Plant Image */}
-        <View className="items-center mb-6">
+        <View className="mb-6 items-center">
           {plant.image_url ? (
             <Image
               source={{ uri: plant.image_url }}
-              className="w-48 h-48 rounded-lg"
+              className="h-48 w-48 rounded-lg"
               resizeMode="cover"
             />
           ) : (
-            <View className="justify-center items-center w-48 h-48 bg-gray-200 rounded-lg">
+            <View className="h-48 w-48 items-center justify-center rounded-lg bg-gray-200">
               <Text className="text-6xl">🌱</Text>
             </View>
           )}
@@ -148,9 +148,9 @@ export default function PlantDetailPage() {
         </View>
 
         {/* Care Status */}
-        <View className="p-4 mb-6 bg-white rounded-lg shadow-sm">
+        <View className="mb-6 rounded-lg bg-white p-4 shadow-sm">
           <Text className="mb-3 text-lg font-semibold text-gray-800">Care Status</Text>
-          <View className="flex-row justify-between items-center">
+          <View className="flex-row items-center justify-between">
             <View>
               <Text className="text-sm text-gray-600">Last Watered</Text>
               <Text className="text-lg font-medium text-gray-800">
@@ -159,7 +159,7 @@ export default function PlantDetailPage() {
               <Text className="text-sm text-gray-500">{daysSinceWatering} days ago</Text>
             </View>
             {needsWatering && (
-              <View className="px-3 py-2 bg-red-100 rounded">
+              <View className="rounded bg-red-100 px-3 py-2">
                 <Text className="font-medium text-red-600">Needs Water</Text>
               </View>
             )}
@@ -167,7 +167,7 @@ export default function PlantDetailPage() {
         </View>
 
         {/* Plant Information */}
-        <View className="p-4 mb-6 bg-white rounded-lg shadow-sm">
+        <View className="mb-6 rounded-lg bg-white p-4 shadow-sm">
           <Text className="mb-3 text-lg font-semibold text-gray-800">Plant Information</Text>
 
           <View className="mb-3">
@@ -193,14 +193,14 @@ export default function PlantDetailPage() {
         </View>
 
         {/* Actions */}
-        <View className="p-4 mb-6 bg-white rounded-lg shadow-sm">
+        <View className="mb-6 rounded-lg bg-white p-4 shadow-sm">
           <Text className="mb-3 text-lg font-semibold text-gray-800">Actions</Text>
           <TouchableOpacity
             className={`rounded-lg p-3 ${isWatering ? 'bg-gray-300' : needsWatering ? 'bg-blue-500' : 'bg-green-500'}`}
             onPress={handleWaterPlant}
             disabled={isWatering}>
-            <Text className="font-medium text-center text-white">
-              {isWatering ? 'Watering...' : needsWatering ? 'Water Plant' : 'Plant is Healthy'}
+            <Text className="text-center font-medium text-white">
+              {isWatering ? 'Watering...' : 'Water Plant'}
             </Text>
           </TouchableOpacity>
         </View>

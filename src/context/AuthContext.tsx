@@ -2,6 +2,7 @@ import { createContext, useContext, useReducer, useEffect, ReactNode } from 'rea
 import { supabase } from '../utils/supabase';
 import { loginWithEmail, signupWithEmail } from '../services/authService';
 import { User } from '../types/user';
+import { queryClient } from '../utils/queryClient';
 
 interface AuthState {
   user: User | null;
@@ -81,6 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
       } else {
         dispatch({ type: 'LOGOUT' });
+        queryClient.clear();
       }
     });
     return () => {
@@ -129,6 +131,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function logout() {
     await supabase.auth.signOut();
     dispatch({ type: 'LOGOUT' });
+    queryClient.clear();
   }
 
   function updateUser(user: User) {

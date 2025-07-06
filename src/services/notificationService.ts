@@ -46,7 +46,6 @@ export class NotificationService {
       }
 
       if (finalStatus !== 'granted') {
-        console.log('Failed to get push token for push notification!');
         return;
       }
 
@@ -56,9 +55,6 @@ export class NotificationService {
           projectId: process.env.EXPO_PROJECT_ID,
         });
         this.expoPushToken = token.data;
-        console.log('Expo push token:', this.expoPushToken);
-      } else {
-        console.log('Must use physical device for Push Notifications');
       }
 
       // Set up notification channel for Android
@@ -89,7 +85,6 @@ export class NotificationService {
 
       // Don't schedule if the reminder time has already passed
       if (scheduledDate <= now) {
-        console.log('Reminder time has already passed:', scheduledDate);
         return null;
       }
 
@@ -108,10 +103,15 @@ export class NotificationService {
           },
           sound: 'default',
         },
-        trigger: secondsUntilScheduled > 0 ? { seconds: secondsUntilScheduled } : null,
+        trigger:
+          secondsUntilScheduled > 0
+            ? {
+                type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+                seconds: secondsUntilScheduled,
+              }
+            : null,
       });
 
-      console.log('Scheduled notification:', notificationId, 'for:', scheduledDate);
       return notificationId;
     } catch (error) {
       console.error('Error scheduling notification:', error);
@@ -122,7 +122,6 @@ export class NotificationService {
   async cancelNotification(notificationId: string): Promise<void> {
     try {
       await Notifications.cancelScheduledNotificationAsync(notificationId);
-      console.log('Cancelled notification:', notificationId);
     } catch (error) {
       console.error('Error cancelling notification:', error);
     }
@@ -131,7 +130,6 @@ export class NotificationService {
   async cancelAllNotifications(): Promise<void> {
     try {
       await Notifications.cancelAllScheduledNotificationsAsync();
-      console.log('Cancelled all notifications');
     } catch (error) {
       console.error('Error cancelling all notifications:', error);
     }

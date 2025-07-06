@@ -5,7 +5,6 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
-  Alert,
   SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -107,6 +106,7 @@ export function FeatureRequestsPage() {
           </>
         )}
       </ScrollView>
+      <View className="h-20" />
 
       <CreateFeatureRequestModal
         visible={isCreateModalVisible}

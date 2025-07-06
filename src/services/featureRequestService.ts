@@ -10,14 +10,15 @@ import {
 export const featureRequestService = {
   async getFeatureRequests(status?: FeatureRequestStatus): Promise<FeatureRequest[]> {
     try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) throw new Error('User not authenticated');
+
       let query = supabase
         .from('feature_requests')
-        .select(
-          `
-          *,
-          user_vote:feature_request_votes(*)
-        `
-        )
+        .select('*')
         .order('votes_count', { ascending: false })
         .order('created_at', { ascending: false });
 
@@ -25,11 +26,43 @@ export const featureRequestService = {
         query = query.eq('status', status);
       }
 
-      const { data, error } = await query;
+      const { data: featureRequests, error } = await query;
 
       if (error) throw error;
 
-      return data || [];
+      if (!featureRequests || featureRequests.length === 0) {
+        return [];
+      }
+
+      // Get all feature request IDs
+      const featureRequestIds = featureRequests.map((fr) => fr.id);
+
+      // Get current user's votes for these feature requests
+      const { data: userVotes, error: votesError } = await supabase
+        .from('feature_request_votes')
+        .select('*')
+        .eq('user_id', user.id)
+        .in('feature_request_id', featureRequestIds);
+
+      if (votesError) {
+        console.error('Error fetching user votes:', votesError);
+      }
+
+      // Create a map of user votes for quick lookup
+      const userVotesMap = new Map();
+      if (userVotes) {
+        userVotes.forEach((vote) => {
+          userVotesMap.set(vote.feature_request_id, vote);
+        });
+      }
+
+      // Combine feature requests with user votes
+      const result = featureRequests.map((featureRequest) => ({
+        ...featureRequest,
+        user_vote: userVotesMap.get(featureRequest.id) || null,
+      }));
+
+      return result;
     } catch (error) {
       console.error('Error fetching feature requests:', error);
       throw error;
@@ -38,20 +71,41 @@ export const featureRequestService = {
 
   async getFeatureRequestById(id: string): Promise<FeatureRequest | null> {
     try {
-      const { data, error } = await supabase
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) throw new Error('User not authenticated');
+
+      // Get the feature request
+      const { data: featureRequest, error } = await supabase
         .from('feature_requests')
-        .select(
-          `
-          *,
-          user_vote:feature_request_votes(*)
-        `
-        )
+        .select('*')
         .eq('id', id)
         .single();
 
       if (error) throw error;
 
-      return data;
+      if (!featureRequest) {
+        return null;
+      }
+
+      // Get user's vote for this feature request
+      const { data: userVote, error: voteError } = await supabase
+        .from('feature_request_votes')
+        .select('*')
+        .eq('feature_request_id', id)
+        .eq('user_id', user.id)
+        .single();
+
+      if (voteError && voteError.code !== 'PGRST116') {
+        console.error('Error fetching user vote:', voteError);
+      }
+
+      return {
+        ...featureRequest,
+        user_vote: userVote || null,
+      };
     } catch (error) {
       console.error('Error fetching feature request:', error);
       throw error;
@@ -141,12 +195,21 @@ export const featureRequestService = {
           // Remove vote if same type
           await supabase.from('feature_request_votes').delete().eq('id', existingVote.id);
 
-          // Decrease vote count
-          await supabase.rpc('decrease_vote_count', {
-            request_id: voteData.feature_request_id,
-          });
+          // Get current vote count and decrease it
+          const { data: currentRequest } = await supabase
+            .from('feature_requests')
+            .select('votes_count')
+            .eq('id', voteData.feature_request_id)
+            .single();
+
+          if (currentRequest) {
+            await supabase
+              .from('feature_requests')
+              .update({ votes_count: Math.max(0, currentRequest.votes_count - 1) })
+              .eq('id', voteData.feature_request_id);
+          }
         } else {
-          // Change vote type
+          // Change vote type - no change in total count
           await supabase
             .from('feature_request_votes')
             .update({ vote_type: voteData.vote_type })
@@ -160,10 +223,19 @@ export const featureRequestService = {
           vote_type: voteData.vote_type,
         });
 
-        // Increase vote count
-        await supabase.rpc('increase_vote_count', {
-          request_id: voteData.feature_request_id,
-        });
+        // Get current vote count and increase it
+        const { data: currentRequest } = await supabase
+          .from('feature_requests')
+          .select('votes_count')
+          .eq('id', voteData.feature_request_id)
+          .single();
+
+        if (currentRequest) {
+          await supabase
+            .from('feature_requests')
+            .update({ votes_count: currentRequest.votes_count + 1 })
+            .eq('id', voteData.feature_request_id);
+        }
       }
     } catch (error) {
       console.error('Error voting on feature request:', error);
@@ -173,7 +245,14 @@ export const featureRequestService = {
 
   async getMostWantedRequests(limit: number = 10): Promise<FeatureRequest[]> {
     try {
-      const { data, error } = await supabase
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) throw new Error('User not authenticated');
+
+      // Get most wanted feature requests
+      const { data: featureRequests, error } = await supabase
         .from('feature_requests')
         .select('*')
         .order('votes_count', { ascending: false })
@@ -181,7 +260,39 @@ export const featureRequestService = {
 
       if (error) throw error;
 
-      return data || [];
+      if (!featureRequests || featureRequests.length === 0) {
+        return [];
+      }
+
+      // Get all feature request IDs
+      const featureRequestIds = featureRequests.map((fr) => fr.id);
+
+      // Get current user's votes for these feature requests
+      const { data: userVotes, error: votesError } = await supabase
+        .from('feature_request_votes')
+        .select('*')
+        .eq('user_id', user.id)
+        .in('feature_request_id', featureRequestIds);
+
+      if (votesError) {
+        console.error('Error fetching user votes:', votesError);
+      }
+
+      // Create a map of user votes for quick lookup
+      const userVotesMap = new Map();
+      if (userVotes) {
+        userVotes.forEach((vote) => {
+          userVotesMap.set(vote.feature_request_id, vote);
+        });
+      }
+
+      // Combine feature requests with user votes
+      const result = featureRequests.map((featureRequest) => ({
+        ...featureRequest,
+        user_vote: userVotesMap.get(featureRequest.id) || null,
+      }));
+
+      return result;
     } catch (error) {
       console.error('Error fetching most wanted requests:', error);
       throw error;

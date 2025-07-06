@@ -3,7 +3,11 @@ export { default as customRequest } from './utils/customRequest';
 export { queryClient } from './utils/queryClient';
 
 // Services
-export { UserService, userKeys } from './services/userService';
+export {
+  updateUserExpoToken,
+  getUserExpoToken,
+  getAllUsersWithTokens,
+} from './services/userService';
 
 // Types
 export type {
